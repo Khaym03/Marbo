@@ -1,0 +1,19 @@
+{
+  "settings": {
+    "default_intent": "unknown"
+  },
+  "zones": [],
+  "aliases": [],
+  "flows": [],
+  "intents": [
+    {
+      "id": "hello",
+      "name": "Hello",
+      "zone_id": "general",
+      "response": {
+        "text": "Hola"
+      },
+      "training_phrases": ["hola", "buenas"]
+    }
+  ]
+}
