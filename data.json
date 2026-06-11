@@ -1,0 +1,353 @@
+{
+  "version": "1.0.0",
+  "settings": {
+    "similarity_threshold": 0.75,
+    "ambiguity_threshold": 0.05,
+    "max_clarification_options": 3,
+    "session_timeout_minutes": 15
+  },
+  "zones": [
+    {
+      "id": "ZONE_CONTROL_ACADEMICO",
+      "label": "Control Académico"
+    },
+    {
+      "id": "ZONE_DOBE",
+      "label": "DOBE"
+    },
+    {
+      "id": "ZONE_CAJA",
+      "label": "Caja"
+    }
+  ],
+  "intents": [
+    {
+      "id": "INTENT_REQUISITOS_INGRESO",
+      "kind": "faq",
+      "zone_id": "ZONE_CONTROL_ACADEMICO",
+      "requires_flow": false,
+      "response": {
+        "text": "Los requisitos para inscribirte en el PSM San Cristóbal son: Título de Bachiller (fondo negro), Notas Certificadas, Copia de Cédula, Partida de Nacimiento, 2 fotos carnet y la Planilla de la OPSU.",
+        "suggestions": [
+          "¿Fechas de inscripción?",
+          "¿Dónde queda Control Académico?"
+        ]
+      },
+      "training_phrases": [
+        "¿Cuáles son los requisitos para inscribirme?",
+        "¿Qué necesito para estudiar en el politécnico?",
+        "Requisitos de inscripción",
+        "Documentos para ingresar",
+        "Quiero inscribirme",
+        "Necesito información para ingresar",
+        "¿Qué papeles debo llevar?",
+        "¿Qué documentos piden para la inscripción?",
+        "Voy a estudiar aquí, ¿qué necesito?",
+        "Requisitos para nuevo ingreso",
+        "Inscripción de nuevo ingreso",
+        "¿Cómo me inscribo?",
+        "¿Qué necesito entregar para inscribirme?",
+        "Información de inscripción",
+        "Quiero comenzar a estudiar"
+      ]
+    },
+    {
+      "id": "INTENT_FECHAS_REGULARES",
+      "kind": "faq",
+      "zone_id": "ZONE_CONTROL_ACADEMICO",
+      "requires_flow": false,
+      "response": {
+        "text": "Las fechas de inscripción para alumnos regulares son publicadas oficialmente por Control Académico al inicio de cada período académico. Consulta los canales oficiales o acércate a la oficina para confirmar el cronograma vigente.",
+        "suggestions": ["Proceso de inscripción", "Problemas con inscripción"]
+      },
+      "training_phrases": [
+        "¿Cuándo son las inscripciones?",
+        "Fechas de inscripción para regulares",
+        "¿Cuándo me puedo inscribir?",
+        "Cronograma de inscripción",
+        "Inscripción de alumnos regulares",
+        "¿Qué día comienza la inscripción?",
+        "¿Cuándo abre el proceso?",
+        "Necesito saber las fechas",
+        "¿Ya publicaron el cronograma?",
+        "Fechas del semestre",
+        "¿Cuándo toca inscribirse?",
+        "Información de inscripción",
+        "Quiero saber cuándo inscribirme",
+        "Calendario académico",
+        "Fechas para reinscripción"
+      ]
+    },
+    {
+      "id": "INTENT_SAIA_ACCESO",
+      "kind": "diagnostic",
+      "zone_id": "ZONE_DOBE",
+      "requires_flow": true,
+      "flow_id": "FLOW_PROBLEMA_SAIA",
+      "response": {
+        "text": "Iniciando diagnóstico de acceso a SAIA."
+      },
+      "training_phrases": [
+        "No puedo entrar al SAIA",
+        "Tengo problemas con SAIA",
+        "No me deja iniciar sesión",
+        "No puedo acceder a la plataforma",
+        "Mi usuario no funciona",
+        "SAIA no abre",
+        "No puedo ingresar",
+        "Olvidé mi acceso al SAIA",
+        "La plataforma me rechaza",
+        "Tengo inconvenientes con el sistema",
+        "No puedo ver mis materias",
+        "No puedo entrar a mis aulas",
+        "Problema de acceso",
+        "Error al iniciar sesión",
+        "Necesito ayuda con SAIA"
+      ]
+    },
+    {
+      "id": "INTENT_PROBLEMA_ACTA",
+      "kind": "diagnostic",
+      "zone_id": "ZONE_CONTROL_ACADEMICO",
+      "requires_flow": true,
+      "flow_id": "FLOW_RECLAMO_ACTA",
+      "response": {
+        "text": "Iniciando revisión del problema relacionado con actas o listados."
+      },
+      "training_phrases": [
+        "No aparezco en la lista del profesor",
+        "Mi nombre no sale en el acta",
+        "No estoy inscrito en el listado",
+        "Tengo problemas con el acta",
+        "El profesor no me ve en la lista",
+        "No aparezco en clases",
+        "No salgo registrado",
+        "Problema con mi inscripción académica",
+        "No estoy en el sistema",
+        "Mi materia no aparece",
+        "No me encuentran en el listado",
+        "No salgo en la sección",
+        "Tengo un reclamo de acta",
+        "Mi inscripción no se refleja",
+        "No aparezco en el aula"
+      ]
+    },
+    {
+      "id": "INTENT_ACTIVIDADES_EXTRACURRICULARES",
+      "kind": "faq",
+      "zone_id": "ZONE_DOBE",
+      "requires_flow": false,
+      "response": {
+        "text": "El departamento de DOBE coordina las actividades extracurriculares de la institución. Puedes participar en deportes, cultura, danza, música, protocolo y otras actividades estudiantiles.",
+        "suggestions": ["¿Dónde queda DOBE?", "Apoyo estudiantil"]
+      },
+      "training_phrases": [
+        "¿Qué actividades extracurriculares hay?",
+        "Actividades deportivas",
+        "Actividades culturales",
+        "Quiero participar en deportes",
+        "Información sobre cultura",
+        "¿Qué hace DOBE?",
+        "Grupos estudiantiles",
+        "Clubes disponibles",
+        "Actividades para estudiantes",
+        "¿Hay equipos deportivos?",
+        "Quiero hacer actividades",
+        "Opciones extracurriculares",
+        "Programas estudiantiles",
+        "¿Qué puedo hacer fuera de clases?",
+        "Eventos estudiantiles"
+      ]
+    },
+    {
+      "id": "INTENT_INFO_SEDES",
+      "kind": "faq",
+      "zone_id": "ZONE_CONTROL_ACADEMICO",
+      "requires_flow": false,
+      "response": {
+        "text": "El Politécnico Santiago Mariño San Cristóbal cuenta con dos sedes físicas principales: una ubicada en la Avenida Libertador y otra en el sector Las Lomas. Las oficinas administrativas principales operan desde la sede central.",
+        "suggestions": ["Horarios de atención", "Requisitos de inscripción"]
+      },
+      "training_phrases": [
+        "¿Dónde quedan las sedes?",
+        "Ubicación del politécnico",
+        "Dirección de la universidad",
+        "¿Dónde está la sede principal?",
+        "¿Cómo llego al politécnico?",
+        "Información de ubicación",
+        "Dirección de las oficinas",
+        "¿Dónde queda Control Académico?",
+        "¿Dónde queda Caja?",
+        "¿Dónde queda DOBE?",
+        "Necesito la dirección",
+        "Ubicación de las instalaciones",
+        "¿En qué zona están?",
+        "Sedes disponibles",
+        "Dónde están ubicados"
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "FLOW_PROBLEMA_SAIA",
+      "label": "Diagnóstico de Acceso SAIA",
+      "start_node_id": "NODE_SAIA_START",
+      "nodes": [
+        {
+          "id": "NODE_SAIA_START",
+          "response": {
+            "text": "¿Ya realizaste tu inscripción administrativa en el departamento de Caja?",
+            "suggestions": ["Sí, ya pagué", "No, todavía no"]
+          },
+          "transitions": [
+            {
+              "phrases": [
+                "sí",
+                "ya pagué",
+                "sí ya pagué",
+                "pagué",
+                "realicé el pago"
+              ],
+              "target_node_id": "NODE_SAIA_WAIT"
+            },
+            {
+              "phrases": ["no", "todavía no", "aún no", "no he pagado"],
+              "target_node_id": "NODE_SAIA_IR_CAJA"
+            }
+          ]
+        },
+        {
+          "id": "NODE_SAIA_IR_CAJA",
+          "response": {
+            "text": "Debes completar primero el proceso administrativo en Caja. Una vez registrado el pago podrás acceder a los servicios académicos correspondientes.",
+            "suggestions": ["Menú principal"]
+          },
+          "terminal": true
+        },
+        {
+          "id": "NODE_SAIA_WAIT",
+          "response": {
+            "text": "¿Han transcurrido entre 48 y 72 horas desde que realizaste el pago?",
+            "suggestions": ["Sí", "No"]
+          },
+          "transitions": [
+            {
+              "phrases": ["sí", "si", "ya pasó", "han pasado"],
+              "target_node_id": "NODE_SAIA_SOPORTE"
+            },
+            {
+              "phrases": ["no", "hoy pagué", "apenas pagué", "todavía no"],
+              "target_node_id": "NODE_SAIA_ESPERAR"
+            }
+          ]
+        },
+        {
+          "id": "NODE_SAIA_ESPERAR",
+          "response": {
+            "text": "Debes esperar el tiempo de procesamiento administrativo. Si después de 72 horas el problema continúa, vuelve a solicitar soporte.",
+            "suggestions": ["Menú principal"]
+          },
+          "terminal": true
+        },
+        {
+          "id": "NODE_SAIA_SOPORTE",
+          "response": {
+            "text": "Como ya realizaste el pago y transcurrió el tiempo de procesamiento, debes comunicarte con soporte académico para revisar tu acceso al sistema.",
+            "suggestions": ["Menú principal"]
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "FLOW_RECLAMO_ACTA",
+      "label": "Reclamo por Ausencia en Acta",
+      "start_node_id": "NODE_ACTA_START",
+      "nodes": [
+        {
+          "id": "NODE_ACTA_START",
+          "response": {
+            "text": "¿Tienes a la mano tu comprobante de inscripción sellado por Caja?",
+            "suggestions": ["Sí lo tengo", "No lo tengo"]
+          },
+          "transitions": [
+            {
+              "phrases": [
+                "sí lo tengo",
+                "lo tengo",
+                "tengo el comprobante",
+                "aquí lo tengo",
+                "lo tengo sellado"
+              ],
+              "target_node_id": "NODE_ACTA_CONTROL"
+            },
+            {
+              "phrases": [
+                "no lo tengo",
+                "no",
+                "lo perdí",
+                "no encuentro el comprobante"
+              ],
+              "target_node_id": "NODE_ACTA_BUSCAR"
+            }
+          ]
+        },
+        {
+          "id": "NODE_ACTA_CONTROL",
+          "response": {
+            "text": "Dirígete a Control Académico con tu comprobante para que puedan verificar tu inscripción y corregir tu situación en el listado.",
+            "suggestions": ["Menú principal"]
+          },
+          "terminal": true
+        },
+        {
+          "id": "NODE_ACTA_BUSCAR",
+          "response": {
+            "text": "Debes solicitar una copia o validación de tu inscripción antes de iniciar el reclamo formal ante Control Académico.",
+            "suggestions": ["Menú principal"]
+          },
+          "terminal": true
+        }
+      ]
+    }
+  ],
+  "aliases": [
+    {
+      "canonical": "Control de Estudio",
+      "variants": [
+        "control academico",
+        "taquilla de notas",
+        "inscripciones",
+        "admision"
+      ]
+    },
+    {
+      "canonical": "SAIA",
+      "variants": [
+        "plataforma virtual",
+        "aula virtual",
+        "página de materias",
+        "saia virtual"
+      ]
+    },
+    {
+      "canonical": "Caja",
+      "variants": [
+        "administración",
+        "pagar matricula",
+        "pagos",
+        "cajero",
+        "aranceles"
+      ]
+    },
+    {
+      "canonical": "DOBE",
+      "variants": [
+        "bienestar estudiantil",
+        "orientacion",
+        "cultura y deporte",
+        "protocolo"
+      ]
+    }
+  ]
+}
