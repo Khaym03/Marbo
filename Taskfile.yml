@@ -16,3 +16,7 @@ tasks:
     cmds:
       - uv run --with "optimum[onnxruntime]" export.py
     silent: false
+  audit-data:
+    desc: Audit KB to detect issues & posibles solutions
+    cmds:
+      - go run cmd/audit/main.go
