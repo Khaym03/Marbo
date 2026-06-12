@@ -10,3 +10,8 @@ wheels/
 
 # Virtual environments
 .venv
+
+# wails
+build/bin
+node_modules
+frontend/dist
