@@ -1,3 +1,4 @@
+// Package expansion provides functions to generate training phrase expansions for intents.
 package expansion
 
 import (
