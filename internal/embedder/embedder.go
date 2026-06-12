@@ -122,13 +122,10 @@ func (e *E5Embedder) Embed(text string) ([]float32, error) {
 		return nil, err
 	}
 
-	seqLen := len(en.Ids)
-	if seqLen > MaxSeqLength {
-		seqLen = MaxSeqLength
-	}
+	seqLen := min(len(en.Ids), MaxSeqLength)
 
 	// Reset buffers
-	for i := 0; i < MaxSeqLength; i++ {
+	for i := range MaxSeqLength {
 		e.inputIDsData[i] = 0
 		e.attentionMaskData[i] = 0
 		e.tokenTypeData[i] = 0
@@ -163,13 +160,13 @@ func meanPoolAndNormalize(
 	embedding := make([]float32, EmbeddingSize)
 	var valid float32
 
-	for t := int64(0); t < seqLen; t++ {
+	for t := range seqLen {
 		if mask[t] == 0 {
 			continue
 		}
 		valid++
 		offset := t * EmbeddingSize
-		for dim := 0; dim < EmbeddingSize; dim++ {
+		for dim := range EmbeddingSize {
 			embedding[dim] += output[int(offset)+dim]
 		}
 	}
