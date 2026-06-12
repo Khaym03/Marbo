@@ -3,16 +3,29 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/Khaym03/Marbo/internal/runtime"
 )
 
 // App struct
 type App struct {
 	ctx context.Context
+	r   *runtime.Runtime
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
+}
+
+func (a *App) SetRuntime(r *runtime.Runtime) {
+	a.r = r
+}
+
+func (a *App) SendMessage(text string) (runtime.RuntimeResult, error) {
+	if a.r == nil {
+		return runtime.RuntimeResult{}, fmt.Errorf("runtime not initialized")
+	}
+	return a.r.Handle(text)
 }
 
 // startup is called when the app starts. The context is saved

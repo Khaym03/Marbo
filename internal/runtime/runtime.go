@@ -10,17 +10,13 @@ import (
 )
 
 type RuntimeResult struct {
-	Type RuntimeResultType
-
-	Response domain.Response
-
-	IntentID domain.IntentID
-	ZoneID   domain.ZoneID
-
-	FlowID domain.FlowID
-	NodeID domain.NodeID
-
-	Extension *RuntimeExtension
+	Type      RuntimeResultType `json:"type"`
+	Response  domain.Response   `json:"response"`
+	IntentID  domain.IntentID   `json:"intent_id"`
+	ZoneID    domain.ZoneID     `json:"zone_id"`
+	FlowID    domain.FlowID     `json:"flow_id"`
+	NodeID    domain.NodeID     `json:"node_id"`
+	Extension *RuntimeExtension `json:"extension"`
 }
 
 func (r *RuntimeResult) String() string {
@@ -41,17 +37,22 @@ const (
 )
 
 type RuntimeExtension struct {
-	Confidence *ConfidenceData
-	Clarify    *ClarificationData
-	Trace      *TraceData
+	Confidence *ConfidenceData    `json:"confidence"`
+	Clarify    *ClarificationData `json:"clarify"`
+	Trace      *TraceData         `json:"trace"`
 }
 
 type ConfidenceData struct {
-	Score float32
+	Score float32 `json:"score"`
+}
+
+type ClarificationOption struct {
+	IntentID domain.IntentID `json:"intent_id"`
+	Label    string          `json:"label"`
 }
 
 type ClarificationData struct {
-	Candidates []domain.IntentID
+	Options []ClarificationOption `json:"options"`
 }
 
 // Placeholders for future phases
@@ -132,11 +133,19 @@ func (r *Runtime) Handle(text string) (RuntimeResult, error) {
 		return RuntimeResult{Type: ResultFallback}, nil
 	case DecisionClarification:
 		PrintStateDebug(r, "AFTER HANDLE")
+		options := []ClarificationOption{}
+		for _, id := range decision.Candidates {
+			intent, ok := r.cache.IntentMap[id]
+			if !ok {
+				continue
+			}
+			options = append(options, ClarificationOption{IntentID: id, Label: intent.Label})
+		}
 		return RuntimeResult{
 			Type: ResultClarification,
 			Extension: &RuntimeExtension{
 				Confidence: &ConfidenceData{Score: decision.Confidence},
-				Clarify:    &ClarificationData{Candidates: decision.Candidates},
+				Clarify:    &ClarificationData{Options: options},
 			},
 		}, nil
 	case DecisionExecute:
