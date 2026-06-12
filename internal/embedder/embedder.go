@@ -131,7 +131,7 @@ func (e *E5Embedder) Embed(text string) ([]float32, error) {
 		e.tokenTypeData[i] = 0
 	}
 
-	for i := 0; i < seqLen; i++ {
+	for i := range seqLen {
 		e.inputIDsData[i] = int64(en.Ids[i])
 		e.attentionMaskData[i] = int64(en.AttentionMask[i])
 	}
