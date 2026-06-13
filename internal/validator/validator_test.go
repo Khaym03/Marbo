@@ -11,7 +11,7 @@ func TestValidate(t *testing.T) {
 		kb := &domain.KnowledgeBase{
 			Zones: []domain.Zone{{ID: "Z1"}},
 			Intents: []domain.Intent{
-				{ID: "I1", ZoneID: "Z1", RequiresFlow: false, Response: domain.Response{Text: "OK"}, TrainingPhrases: []string{"phrase"}},
+				{ID: "I1", Label: "L1", ZoneID: "Z1", RequiresFlow: false, Response: domain.Response{Text: "OK"}, TrainingPhrases: []string{"phrase"}},
 			},
 		}
 		if err := Validate(kb); err != nil {
@@ -22,7 +22,7 @@ func TestValidate(t *testing.T) {
 	t.Run("Duplicate IDs", func(t *testing.T) {
 		kb := &domain.KnowledgeBase{
 			Zones:   []domain.Zone{{ID: "Z1"}, {ID: "Z1"}},
-			Intents: []domain.Intent{{ID: "I1"}, {ID: "I1"}},
+			Intents: []domain.Intent{{ID: "I1", Label: "L1"}, {ID: "I1", Label: "L1"}},
 			Flows:   []domain.Flow{{ID: "F1"}, {ID: "F1"}},
 		}
 		err := Validate(kb)
@@ -35,8 +35,8 @@ func TestValidate(t *testing.T) {
 		kb := &domain.KnowledgeBase{
 			Zones: []domain.Zone{{ID: "Z1"}},
 			Intents: []domain.Intent{
-				{ID: "I1", ZoneID: "Z2", TrainingPhrases: []string{"p"}},
-				{ID: "I2", ZoneID: "Z1", RequiresFlow: true, FlowID: "F2", TrainingPhrases: []string{"p"}},
+				{ID: "I1", Label: "L1", ZoneID: "Z2", TrainingPhrases: []string{"p"}},
+				{ID: "I2", Label: "L2", ZoneID: "Z1", RequiresFlow: true, FlowID: "F2", TrainingPhrases: []string{"p"}},
 			},
 		}
 		err := Validate(kb)
@@ -78,6 +78,19 @@ func TestValidate(t *testing.T) {
 						{ID: "N2"},
 					},
 				},
+			},
+		}
+		err := Validate(kb)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+	})
+
+	t.Run("Missing Label", func(t *testing.T) {
+		kb := &domain.KnowledgeBase{
+			Zones: []domain.Zone{{ID: "Z1"}},
+			Intents: []domain.Intent{
+				{ID: "I1", Label: "", ZoneID: "Z1", TrainingPhrases: []string{"p"}},
 			},
 		}
 		err := Validate(kb)

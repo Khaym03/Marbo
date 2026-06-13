@@ -23,6 +23,7 @@
   "intents": [
     {
       "id": "INTENT_REQUISITOS_INGRESO",
+      "label": "Requisitos de inscripción",
       "kind": "faq",
       "zone_id": "ZONE_CONTROL_ACADEMICO",
       "requires_flow": false,
@@ -53,6 +54,7 @@
     },
     {
       "id": "INTENT_FECHAS_REGULARES",
+      "label": "Fechas de inscripción",
       "kind": "faq",
       "zone_id": "ZONE_CONTROL_ACADEMICO",
       "requires_flow": false,
@@ -80,6 +82,7 @@
     },
     {
       "id": "INTENT_SAIA_ACCESO",
+      "label": "Problemas de acceso SAIA",
       "kind": "diagnostic",
       "zone_id": "ZONE_DOBE",
       "requires_flow": true,
@@ -107,6 +110,7 @@
     },
     {
       "id": "INTENT_PROBLEMA_ACTA",
+      "label": "Reclamo por acta",
       "kind": "diagnostic",
       "zone_id": "ZONE_CONTROL_ACADEMICO",
       "requires_flow": true,
@@ -134,6 +138,7 @@
     },
     {
       "id": "INTENT_ACTIVIDADES_EXTRACURRICULARES",
+      "label": "Actividades extracurriculares",
       "kind": "faq",
       "zone_id": "ZONE_DOBE",
       "requires_flow": false,
@@ -161,6 +166,7 @@
     },
     {
       "id": "INTENT_INFO_SEDES",
+      "label": "Información de sedes",
       "kind": "faq",
       "zone_id": "ZONE_CONTROL_ACADEMICO",
       "requires_flow": false,
