@@ -1,6 +1,8 @@
 package runtime
 
-import "github.com/Khaym03/Marbo/internal/domain"
+import (
+	"github.com/Khaym03/Marbo/internal/domain"
+)
 
 type DecisionType string
 
@@ -27,6 +29,14 @@ func EvaluateConfidence(ranking IntentRanking, settings domain.Settings) Decisio
 		return Decision{Type: DecisionFallback}
 	}
 
+	// OOD Detection: Flat ranking check (only if score is above threshold)
+	if len(ranking.Candidates) > 1 {
+		variance := calculateTop5Variance(ranking.Candidates)
+		if variance < 0.0005 {
+			return Decision{Type: DecisionFallback}
+		}
+	}
+
 	if len(ranking.Candidates) == 1 {
 		return Decision{Type: DecisionExecute, IntentID: best.IntentID, Confidence: best.Score}
 	}
@@ -47,4 +57,25 @@ func EvaluateConfidence(ranking IntentRanking, settings domain.Settings) Decisio
 		Candidates: candidates,
 		Confidence: best.Score,
 	}
+}
+
+func calculateTop5Variance(candidates []IntentScore) float32 {
+	count := len(candidates)
+	if count > 5 {
+		count = 5
+	}
+	if count < 2 {
+		return 0
+	}
+
+	var sum float32
+	for i := 0; i < count; i++ {
+		sum += candidates[i].Score
+	}
+	mean := sum / float32(count)
+	var sqDiffSum float32
+	for i := 0; i < count; i++ {
+		sqDiffSum += (candidates[i].Score - mean) * (candidates[i].Score - mean)
+	}
+	return sqDiffSum / float32(count)
 }

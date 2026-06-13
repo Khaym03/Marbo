@@ -5,7 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
+
+	"github.com/Khaym03/Marbo/internal/domain"
+	"github.com/Khaym03/Marbo/internal/embedder"
+
+	"github.com/Khaym03/Marbo/internal/validator"
 )
 
 const CacheFilePath = "cache.json"
@@ -90,4 +96,45 @@ func getFileHash(filePath string) (string, error) {
 		return "", err
 	}
 	return fmt.Sprintf("%x", hash.Sum(nil)), nil
+}
+func LoadOrBuildCache(
+	dataFilePath string,
+	emb embedder.Embedder,
+) (*Cache, *domain.KnowledgeBase, error) {
+	cache, err := LoadCache(dataFilePath)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	data, err := domain.Load(dataFilePath)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if err := validator.Validate(data); err != nil {
+		return nil, nil, err
+	}
+
+	if cache != nil {
+		log.Println("Cache loaded successfully.")
+		return cache, data, nil
+	}
+
+	log.Println("Rebuilding cache...")
+
+	b := NewBuilder(emb)
+	cache, err = b.Build(data)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if err := SaveCache(cache); err != nil {
+		return nil, nil, err
+	}
+	if err := SaveCacheHash(dataFilePath); err != nil {
+		return nil, nil, err
+	}
+
+	log.Println("Cache built and saved.")
+	return cache, data, nil
 }

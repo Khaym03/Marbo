@@ -1,6 +1,8 @@
 package runtime
 
-import "github.com/Khaym03/Marbo/internal/domain"
+import (
+	"github.com/Khaym03/Marbo/internal/domain"
+)
 
 type IntentVector struct {
 	IntentID domain.IntentID `json:"intent_id"`

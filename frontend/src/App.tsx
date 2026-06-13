@@ -1,9 +1,7 @@
+import {ChatPage} from './components/ChatPage';
+
 function App() {
-  return (
-    <>
-      <section id="center">base</section>
-    </>
-  );
+  return <ChatPage />;
 }
 
 export default App;

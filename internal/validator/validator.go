@@ -66,6 +66,11 @@ func Validate(kb *domain.KnowledgeBase) error {
 				errs = append(errs, ValidationError{"INVALID_TRAINING_PHRASE", fmt.Sprintf("intent %s has an empty training phrase", intent.ID)})
 			}
 		}
+
+		// Rule 12: Intent Label
+		if strings.TrimSpace(intent.Label) == "" {
+			errs = append(errs, ValidationError{"MISSING_INTENT_LABEL", fmt.Sprintf("intent %s has missing or empty label", intent.ID)})
+		}
 	}
 
 	// Rule 7, 8, 9, 11

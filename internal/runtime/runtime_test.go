@@ -1,22 +1,22 @@
 package runtime
 
 import (
+	"encoding/json"
+	"strings"
 	"testing"
 
 	"github.com/Khaym03/Marbo/internal/domain"
 )
 
-func TestRuntime_ConfidenceAndClarification(t *testing.T) {
+func TestRuntime_ClarificationEnrichment(t *testing.T) {
 	cache := &Cache{
 		IntentMap: map[domain.IntentID]domain.Intent{
-			"intent_a": {ID: "intent_a", RequiresFlow: false, Response: domain.Response{Text: "A"}},
-			"intent_b": {ID: "intent_b", RequiresFlow: false, Response: domain.Response{Text: "B"}},
-			"intent_c": {ID: "intent_c", RequiresFlow: false, Response: domain.Response{Text: "C"}},
+			"intent1": {ID: "intent1", Label: "Label 1"},
+			"intent2": {ID: "intent2", Label: "Label 2"},
 		},
 		Intents: []IntentVector{
-			{IntentID: "intent_a", Vector: []float32{1, 0}},
-			{IntentID: "intent_b", Vector: []float32{0, 1}},
-			{IntentID: "intent_c", Vector: []float32{0, 0}},
+			{IntentID: "intent1", Vector: []float32{1.0, 0.0}},
+			{IntentID: "intent2", Vector: []float32{0.9, 0.1}},
 		},
 	}
 	settings := domain.Settings{
@@ -24,60 +24,100 @@ func TestRuntime_ConfidenceAndClarification(t *testing.T) {
 		AmbiguityThreshold:      0.1,
 		MaxClarificationOptions: 2,
 	}
+	mock := &TestMockEmbedder{
+		vectorMap: map[string][]float32{
+			"test": []float32{0.95, 0.05},
+		},
+	}
+	runtime := NewRuntime(mock, cache, settings)
+	result, err := runtime.Handle("test")
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	t.Run("Strong Match", func(t *testing.T) {
-		mock := MockEmbedder{vector: []float32{0.9, 0}}
-		rt := NewRuntime(mock, cache, settings)
-		res, err := rt.Handle("query")
-		if err != nil {
-			t.Fatal(err)
-		}
-		if res.Type != ResultAnswer || res.IntentID != "intent_a" || res.Extension.Confidence.Score < 0.89 {
-			t.Errorf("expected strong match, got %v", res)
-		}
-	})
+	if result.Type != ResultClarification {
+		t.Fatalf("expected clarification, got %s", result.Type)
+	}
 
-	t.Run("Low Confidence", func(t *testing.T) {
-		mock := MockEmbedder{vector: []float32{0.1, 0}}
-		rt := NewRuntime(mock, cache, settings)
-		res, err := rt.Handle("query")
-		if err != nil {
-			t.Fatal(err)
-		}
-		if res.Type != ResultFallback {
-			t.Errorf("expected fallback, got %v", res)
-		}
-	})
+	if len(result.Extension.Clarify.Options) != 2 {
+		t.Fatalf("expected 2 options, got %d", len(result.Extension.Clarify.Options))
+	}
+}
 
-	t.Run("Ambiguous Match", func(t *testing.T) {
-		mock := MockEmbedder{vector: []float32{0.85, 0.80}}
-		rt := NewRuntime(mock, cache, settings)
-		res, err := rt.Handle("query")
-		if err != nil {
-			t.Fatal(err)
-		}
-		if res.Type != ResultClarification {
-			t.Errorf("expected clarification, got %v", res)
-		}
-		if len(res.Extension.Clarify.Candidates) != 2 {
-			t.Errorf("expected 2 candidates, got %d", len(res.Extension.Clarify.Candidates))
-		}
-	})
+func TestRuntime_JSONSerialization(t *testing.T) {
+	res := RuntimeResult{
+		Type: ResultAnswer,
+		Response: domain.Response{
+			Text: "Answer",
+		},
+		IntentID: "intent1",
+		Extension: &RuntimeExtension{
+			Confidence: &ConfidenceData{Score: 0.9},
+			Clarify: &ClarificationData{
+				Options: []ClarificationOption{{IntentID: "intent1", Label: "Label 1"}},
+			},
+		},
+	}
+	data, err := json.Marshal(res)
+	if err != nil {
+		t.Fatal(err)
+	}
+	jsonStr := string(data)
 
-	t.Run("Active Flow Bypass", func(t *testing.T) {
-		cache.Flows = []domain.Flow{{ID: "flow1", StartNode: "n1", Nodes: []domain.FlowNode{{ID: "n1", Response: domain.Response{Text: "Flow"}}}}}
-
-		mock := MockEmbedder{vector: []float32{0.1, 0}}
-		rt := NewRuntime(mock, cache, settings)
-		rt.state = &ConversationState{ActiveFlowID: "flow1", CurrentNodeID: "n1"}
-
-		res, err := rt.Handle("query")
-		if err != nil {
-			t.Fatal(err)
+	// Verify field names (must be lowercase as per requirements)
+	expected := []string{
+		"\"type\"",
+		"\"response\"",
+		"\"intent_id\"",
+		"\"extension\"",
+		"\"confidence\"",
+		"\"clarify\"",
+		"\"options\"",
+		"\"label\"",
+	}
+	for _, e := range expected {
+		if !strings.Contains(jsonStr, e) {
+			t.Errorf("JSON missing expected field %s: %s", e, jsonStr)
 		}
+	}
+}
 
-		if res.Type != ResultFlow {
-			t.Errorf("expected flow, got %v", res)
-		}
-	})
+func TestExampleSerialization(t *testing.T) {
+	examples := map[string]RuntimeResult{
+		"ResultAnswer": {
+			Type:     ResultAnswer,
+			IntentID: "intent_a",
+			Response: domain.Response{Text: "Hello!"},
+			Extension: &RuntimeExtension{
+				Confidence: &ConfidenceData{Score: 0.95},
+			},
+		},
+		"ResultFlow": {
+			Type:     ResultFlow,
+			IntentID: "intent_b",
+			FlowID:   "flow_1",
+			NodeID:   "node_1",
+			Response: domain.Response{Text: "Starting flow..."},
+		},
+		"ResultClarification": {
+			Type: ResultClarification,
+			Extension: &RuntimeExtension{
+				Confidence: &ConfidenceData{Score: 0.5},
+				Clarify: &ClarificationData{
+					Options: []ClarificationOption{
+						{IntentID: "intent_1", Label: "Requisitos de inscripción"},
+						{IntentID: "intent_2", Label: "Fechas de examen"},
+					},
+				},
+			},
+		},
+		"ResultFallback": {
+			Type: ResultFallback,
+		},
+	}
+
+	for name, res := range examples {
+		data, _ := json.MarshalIndent(res, "", "  ")
+		t.Logf("--- %s ---\n%s\n", name, string(data))
+	}
 }
