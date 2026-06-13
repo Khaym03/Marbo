@@ -130,7 +130,12 @@ func (r *Runtime) Handle(text string) (RuntimeResult, error) {
 	switch decision.Type {
 	case DecisionFallback:
 		PrintStateDebug(r, "AFTER HANDLE")
-		return RuntimeResult{Type: ResultFallback}, nil
+		return RuntimeResult{
+			Type: ResultFallback,
+			Response: domain.Response{
+				Text: "No fui entrenado para responder eso :C",
+			},
+		}, nil
 	case DecisionClarification:
 		PrintStateDebug(r, "AFTER HANDLE")
 		options := []ClarificationOption{}
