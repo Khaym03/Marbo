@@ -15,3 +15,7 @@ wheels/
 build/bin
 node_modules
 frontend/dist
+
+*.exe
+cache.json
+cache.json.hash
