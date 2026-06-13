@@ -4,13 +4,16 @@ import (
 	"embed"
 	"log"
 
-	"github.com/Khaym03/Marbo/internal/domain"
 	"github.com/Khaym03/Marbo/internal/embedder"
 	"github.com/Khaym03/Marbo/internal/runtime"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	ort "github.com/yalue/onnxruntime_go"
+)
+
+const (
+	dataFilepath = "data.json"
 )
 
 //go:embed all:frontend/dist
@@ -31,12 +34,7 @@ func main() {
 	}
 	defer emb.Close()
 
-	data, err := domain.Load("data.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	cache, err := runtime.PopulateCache(data, emb)
+	cache, data, err := runtime.LoadOrBuildCache(dataFilepath, emb)
 	if err != nil {
 		log.Fatal(err)
 	}

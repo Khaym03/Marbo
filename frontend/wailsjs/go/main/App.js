@@ -5,3 +5,11 @@
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
+
+export function SendMessage(arg1) {
+  return window['go']['main']['App']['SendMessage'](arg1);
+}
+
+export function SetRuntime(arg1) {
+  return window['go']['main']['App']['SetRuntime'](arg1);
+}
