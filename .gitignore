@@ -19,3 +19,4 @@ frontend/dist
 *.exe
 cache.json
 cache.json.hash
+frontend/package.json.md5
